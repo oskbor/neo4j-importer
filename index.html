@@ -1,0 +1,49 @@
+<!doctype html>
+<head>
+  <title>Neo4j Importer Prototype</title>
+  <meta charset="UTF-8">
+  <meta name="description" content="Neo4j importer">
+  <meta name="author" content="Oskar Bšrjesson">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+  <script src='lib/jquery-1.7.1.min.js'></script>
+  <script src='lib/ember-0.9.7.1.min.js'></script>
+  <script src="lib/bootstrap.min.js"></script>
+<body>
+  <h1>Neo4j Importer</h1>
+
+
+  <script type="text/x-handlebars">
+      {{#view App.AddNode}}Add Node{{/view}}
+      <table><tr>
+{{#each App.nodeController}}
+<td valign="top">{{view App.NodeView  contentBinding="this"}}</td>
+{{/each}}
+          </tr>
+      </table>
+  </script>
+
+  <script data-template-name='node-template' type="text/x-handlebars">               
+      <div class="node">
+          <table class="table-bordered table-striped">
+              <tr> <thead colspan="3">Node</thead></tr>
+      {{#each content.attributes}}
+      {{view App.AttributeView contentBinding="this"}}
+    {{/each}}
+    <tr><td colspan="3">{{#view App.AddAttribute contentBinding="this"}}
+            Add Attrbute{{/view}}</td>
+      </table></div>
+  </script>
+
+ 
+<script data-template-name='attribute-template' type="text/x-handlebars">               
+<tr>
+    <td>{{#view App.Text valueBinding="content.key"}}{{/view}}: </td>
+    <td>{{#view App.Text valueBinding="content.value"}}{{/view}}</td>
+    <td>{{view App.DeleteAttributeView contentBinding="this"}}</td>
+</tr>
+</script>
+  
+  <script src="app.js"></script>
+  
+</body>
+</html>
