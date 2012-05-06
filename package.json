@@ -1,0 +1,20 @@
+{
+    "name" : "neo4j-importer",
+    "description" : "(pending)",
+    "version" : "0.1",
+    "main" : "",
+    "author" : {
+        "name" : "oskbor",
+        "email" : ""
+    },
+    "keywords" : 
+        [
+            ""
+        ],
+    "licenses" : {
+        "type" : "none"
+    },
+    "bugs" : {
+        "web" : "null"
+    }
+}

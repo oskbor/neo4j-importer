@@ -4,46 +4,97 @@
   <meta charset="UTF-8">
   <meta name="description" content="Neo4j importer">
   <meta name="author" content="Oskar Bšrjesson">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
   <script src='lib/jquery-1.7.1.min.js'></script>
   <script src='lib/ember-0.9.7.1.min.js'></script>
   <script src="lib/bootstrap.min.js"></script>
-<body>
-  <h1>Neo4j Importer</h1>
-
-
-  <script type="text/x-handlebars">
-      {{#view App.AddNode}}Add Node{{/view}}
-      <table><tr>
-{{#each App.nodeController}}
-<td valign="top">{{view App.NodeView  contentBinding="this"}}</td>
-{{/each}}
-          </tr>
+  <script src="lib/underscore-min.js"></script>
+  <style>
+      .attribute {
+  width: 80px;
+  margin-top:3px;
+  margin-bottom:3px;
+}
+  </style>
+  
+    <script data-template-name='node-template' type="text/x-handlebars">               
+     <div class="node span3">
+          <table class="table-bordered table-condensed">
+            <thead> 
+                <tr><th colspan="2"> Node</th><th>&nbsp;</th></tr>
+                <tr><th>Key</th><th>Value</th><th>&nbsp;</th></thead>
+                 {{#each content.attributes}}
+                    {{view App.AttributeView contentBinding="this"}}
+                 {{/each}}
+        <tr>
+        <td colspan="3">
+            {{#view App.AddAttribute contentBinding="this"}}
+            <i class="icon-plus"></i><strong>Add Attribute</strong> {{/view}}
+        </td>
+        </tr>
       </table>
+     </div>
   </script>
-
-  <script data-template-name='node-template' type="text/x-handlebars">               
-      <div class="node">
-          <table class="table-bordered table-striped">
-              <tr> <thead colspan="3">Node</thead></tr>
-      {{#each content.attributes}}
-      {{view App.AttributeView contentBinding="this"}}
-    {{/each}}
-    <tr><td colspan="3">{{#view App.AddAttribute contentBinding="this"}}
-            Add Attrbute{{/view}}</td>
-      </table></div>
+      <script data-template-name='relation-template' type="text/x-handlebars">               
+     <div class="relation span3">
+          <table class="table-bordered table-condensed">
+            <thead> 
+                <tr><th colspan="2"> Relation</th><th>&nbsp;</th></tr>
+                <tr><th>Type:</th><th>
+                        {{view App.Text valueBinding="content.type"}}</th>
+                    <th>&nbsp;&nbsp;&nbsp;</th></tr>
+                <tr><th>From</th><th>To</th><th>&nbsp;</th></tr>   
+                <tr><td>{{view App.Text valueBinding="content.from"}}</td>
+                    <td>{{view App.Text valueBinding="content.to"}}</td>
+                    <td>&nbsp;</td></tr>
+                <tr><th>Key</th><th>Value</th><th>&nbsp;</th></tr></thead>
+                 {{#each content.attributes}}
+                    {{view App.AttributeView contentBinding="this"}}
+                 {{/each}}
+        <tr>
+        <td colspan="3">
+            {{#view App.AddAttribute contentBinding="this"}}
+            <i class="icon-plus"></i><strong>Add Attribute</strong> {{/view}}
+        </td>
+        </tr>
+      </table>
+     </div>
   </script>
 
  
 <script data-template-name='attribute-template' type="text/x-handlebars">               
 <tr>
-    <td>{{#view App.Text valueBinding="content.key"}}{{/view}}: </td>
+    <td>{{#view App.Text valueBinding="content.key"}}{{/view}}</td>
     <td>{{#view App.Text valueBinding="content.value"}}{{/view}}</td>
     <td>{{view App.DeleteAttributeView contentBinding="this"}}</td>
 </tr>
 </script>
-  
-  <script src="app.js"></script>
-  
+<body>
+      <script type="text/x-handlebars">
+          <div class="container">
+    <div class="row"><div class="span3">
+            <h1>Neo4j Importer</h1></div>
+        <div class="span1">{{#view App.AddNode}}<i class="icon-plus icon-white"></i>Add Node{{/view}}</div>
+        <div class="span1">{{#view App.AddRelation}}<i class="icon-plus icon-white"></i>Add Relation{{/view}}</div>
+    </div>
+      <div class="row">
+{{#each App.nodeController}}
+{{view App.NodeView  contentBinding="this"}}
+{{/each}}
+      </div>
+   <div class="row">
+{{#each App.relationController}}
+{{view App.RelationView  contentBinding="this"}}
+{{/each}}
+      </div>
+      
+  </script>
+
+
+
+      </div>
+            <script src="app.js"></script>
 </body>
+
 </html>
