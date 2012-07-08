@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<script>
+    App = {};
+    App.splitCSV = function(string, sep) {
+  for (var foo = string.split(sep = sep || ","), x = foo.length - 1, tl; x >= 0; x--) {
+    if (foo[x].replace(/"\s+$/, '"').charAt(foo[x].length - 1) == '"') {
+      if ((tl = foo[x].replace(/^\s+"/, '"')).length > 1 && tl.charAt(0) == '"') {
+        foo[x] = foo[x].replace(/^\s*"|"\s*$/g, '').replace(/""/g, '"');
+      } else if (x) {
+        foo.splice(x - 1, 2, [foo[x - 1], foo[x]].join(sep));
+      } else foo = foo.shift().split(sep).concat(foo);
+    } else foo[x].replace(/""/g, '"');
+  } return foo;
+};
+var array=[];    
+function handle_files(files) {
+  for (i = 0; i < files.length; i++) {
+    file = files[i]
+    console.log(file)
+    var reader = new FileReader()
+    ret = []
+    reader.onload = function(e) {
+      console.log(e.target.result)
+      var holder = document.getElementById('holder')
+      holder.innerHTML = e.target.result
+      array = App.splitCSV(e.target.result, ",");
+    }
+    reader.onerror = function(stuff) {
+      console.log("error", stuff)
+      console.log (stuff.getMessage())
+    }
+    reader.readAsText(file) //readAsdataURL
+  }
+
+}
+</script>
+<body>
+FileReader that works!
+<input type="file" multiple onchange="handle_files(this.files)">
+<div id="holder"></div>
+</body>
+</html>

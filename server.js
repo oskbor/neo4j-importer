@@ -19,6 +19,11 @@ server.get('/choose/:filename', function(req, res) {
         res.send(text);
     });
 });
+server.get('/fileapi', function(req, res) {
+    fs.readFile(__dirname + '/file-api.html', 'utf8', function(err, text){
+        res.send(text);
+    });
+});
 server.listen(8000);
 /*
  * Display upload form

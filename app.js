@@ -5,9 +5,10 @@ var categories = ["ccode", "name", "blaha", "import", "ccode_from"];
 
 
 App.Node = Em.Object.extend({
-  init: function() {
+  init: function(id) {
     this._super();
      this.attributes= [];
+     this.id ="";
     this.attributes.pushObject(App.Attribute.create())
     }
 });
@@ -33,44 +34,39 @@ App.nodeController = Em.ArrayController.create({
 
   // Initialize the array controller with an empty array.
   content: [],
+  currentId: '1',
 
   // Creates a new todo with the passed title, then adds it to the array.
   createNode: function() {
-      if(this.content.length>=4){
-          alert("For layout reasons you cannot add more than 4 nodes currently :)")
-      }
-      else{
     var node = App.Node.create();
-    this.pushObject(node);
+    node.set('id',App.nodeController.currentId);
+    App.nodeController.currentId++;
+    App.nodeController.pushObject(node);
       }
-  }
+  
 });
 App.relationController = Em.ArrayController.create({
-
   // Initialize the array controller with an empty array.
   content: [],
 
   // Creates a new todo with the passed title, then adds it to the array.
   createRelation: function() {
-      if(this.content.length>=4){
-          alert("For layout reasons you cannot add more than 4 relations currently :)")
-      }
-      else{
+
     var rel = App.Relation.create();
-    this.pushObject(rel);
-      }
+    App.relationController.pushObject(rel);
+      
   }
 });
 
-App.AddNode = Ember.Button.extend({
-    classNames: ['add-node-view','btn','btn-success','btn-small'],
-            target: 'App.nodeController',
-            action: 'createNode'
+App.AddNode = Ember.View.extend({
+  tagName:'li',
+  click: App.nodeController.createNode
+    //classNames: ['add-node-view','btn','btn-success','btn-small'],
     });
-    App.AddRelation = Ember.Button.extend({
-    classNames: ['add-rel-view','btn','btn-success','btn-small'],
-            target: 'App.relationController',
-            action: 'createRelation'
+    App.AddRelation = Ember.View.extend({
+    //classNames: ['add-rel-view','btn','btn-success','btn-small'],
+    tagName:'li',
+    click: App.relationController.createRelation
     });
 
 App.AddAttribute = Ember.View.extend({
@@ -110,10 +106,62 @@ App.AttributeView = Em.View.extend({
     node.get('attributes').removeObject(attribute);
   }
 });
+ App.DeleteNodeView = Ember.View.extend({
+     tagName:'i',
+  classNames: ['delete-node-view','icon-remove'],
+  click: function(p1, p2) {
+    var node = this.getPath('contentView.content');
+    App.nodeController.removeObject(node);
+    //App.nodeController.currentId--;
+  }
+});
+ App.DeleteRelationView = Ember.View.extend({
+     tagName:'i',
+  classNames: ['delete-rel-view','icon-remove'],
+  click: function() {
+    var rel = this.getPath('contentView.content');
+    App.relationController.removeObject(rel);
+  }
+});
+
 
 App.RelationView=App.NodeView.extend({
   classNames: ['relation-view'],
   templateName: 'relation-template'
+})
+
+App.Draggable = JQ.Draggable.extend({
+    appendTo: 'body',
+    tagName: 'th',
+    helper: JQ.safeClone
+})
+    App.Droppable = JQ.Droppable.extend({
+    activeClass: 'ui-state-default',
+    hoverClass: 'ui-state-hover',
+    accept: ':not(.ui-sortable-helper)',
+    jq_drop: function(event,ui) {
+        console.log("node-id: " + ui.draggable.attr('data-id'));
+    }
+})
+    App.Dialog = JQ.Dialog.extend({
+    classNames: ['well'],
+    closeText: 'hide',
+    autoOpen:true,
+    draggable: false,
+    closeOnEscape: false,
+    resizable: false,
+    position: ['center',100],
+    modal: true,
+    buttons:[ 
+    {text:'Or play around with some sample data..',
+        id: 'test',
+        disabled: false,
+        click: function()
+        {$(this).dialog("close");}
+    }],
+    jq_create: function() {
+      this.$().parent().find('a.ui-dialog-titlebar-close').remove();  
+    }
 })
 
 
@@ -142,6 +190,13 @@ App.getConfig = function(){
     App.relationController.get('content').forEach(config.parseRelation);
     return config;
 }
+App.NodeView.HeaderView = App.Draggable.extend({
+tagName: 'th',
+//classNameBindings: ['parentView.content.id'],
+attributeBindings: ['colspan', 'data-id'],
+"data-idBinding":'parentView.content.id',
+colspan: 2
+})
 
 
 /**

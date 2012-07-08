@@ -6,10 +6,15 @@
   <meta name="author" content="Oskar Bšrjesson">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+ 
+  <link rel="stylesheet" type="text/css" href="css/jquery-ui-1.8.16.custom.css" />
   <script src='lib/jquery-1.7.1.min.js'></script>
   <script src='lib/ember-0.9.7.1.min.js'></script>
   <script src="lib/bootstrap.min.js"></script>
   <script src="lib/underscore-min.js"></script>
+  <script src="lib/jquery-ui1.9m7.min.js"></script>
+  <script src="jqueryUImixin.js"></script>
+
   <style>
       .attribute {
   width: 80px;
@@ -22,16 +27,17 @@
      <div class="node span3">
           <table class="table-bordered table-condensed">
             <thead> 
-                <tr><th colspan="2"> Node</th><th>&nbsp;</th></tr>
+                <tr>{{#view App.NodeView.HeaderView}}Node {{parentView.content.id}}{{/view}}
+                    <th>{{view App.DeleteNodeView contentBinding="this"}}</th></tr>
                 <tr><th>Key</th><th>Value</th><th>&nbsp;</th></thead>
                  {{#each content.attributes}}
                     {{view App.AttributeView contentBinding="this"}}
                  {{/each}}
         <tr>
-        <td colspan="3">
+        <td colspan="2">
             {{#view App.AddAttribute contentBinding="this"}}
             <i class="icon-plus"></i><strong>Add Attribute</strong> {{/view}}
-        </td>
+        </td><td>&nbsp;</td>
         </tr>
       </table>
      </div>
@@ -40,12 +46,13 @@
      <div class="relation span3">
           <table class="table-bordered table-condensed">
             <thead> 
-                <tr><th colspan="2"> Relation</th><th>&nbsp;</th></tr>
+                <tr><th colspan="2"> Relation</th>
+                    <th>{{view App.DeleteRelationView contentBinding="this"}}</th></tr>
                 <tr><th>Type:</th><th>
                         {{view App.Text valueBinding="content.type"}}</th>
                     <th>&nbsp;&nbsp;&nbsp;</th></tr>
                 <tr><th>From</th><th>To</th><th>&nbsp;</th></tr>   
-                <tr><td>{{view App.Text valueBinding="content.from"}}</td>
+                <tr><td>{{#view App.Droppable}}{{view App.Text valueBinding="parentView.content.from"}}{{/view}}</td>
                     <td>{{view App.Text valueBinding="content.to"}}</td>
                     <td>&nbsp;</td></tr>
                 <tr><th>Key</th><th>Value</th><th>&nbsp;</th></tr></thead>
@@ -53,10 +60,10 @@
                     {{view App.AttributeView contentBinding="this"}}
                  {{/each}}
         <tr>
-        <td colspan="3">
+        <td colspan="2">
             {{#view App.AddAttribute contentBinding="this"}}
             <i class="icon-plus"></i><strong>Add Attribute</strong> {{/view}}
-        </td>
+        </td><td>&nbsp;</td>
         </tr>
       </table>
      </div>
@@ -71,30 +78,79 @@
 </tr>
 </script>
 <body>
-      <script type="text/x-handlebars">
-          <div class="container">
-    <div class="row"><div class="span3">
-            <h1>Neo4j Importer</h1></div>
-        <div class="span1">{{#view App.AddNode}}<i class="icon-plus icon-white"></i>Add Node{{/view}}</div>
-        <div class="span1">{{#view App.AddRelation}}<i class="icon-plus icon-white"></i>Add Relation{{/view}}</div>
-    </div>
-      <div class="row">
-{{#each App.nodeController}}
-{{view App.NodeView  contentBinding="this"}}
-{{/each}}
-      </div>
-   <div class="row">
-{{#each App.relationController}}
-{{view App.RelationView  contentBinding="this"}}
-{{/each}}
-      </div>
-      
-  </script>
+    <script type="text/x-handlebars">
+<div class="navbar">
+    <div class="navbar-inner">
+      <div class="container">
 
-
-
+        <a class="brand" href="#">Neo4j Importer</a>
+        <div class="nav-collapse">
+          <ul class="nav">
+            <li class="active"><a href="#">Home</a></li>
+            {{#view App.AddNode}}<a href="#">Add Node</a>{{/view}}
+            {{#view App.AddRelation}}<a href="#">Add Relation </a>{{/view}}
+            <li><a href="#">Link</a></li>
+            <li><a href="#">Link</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li class="divider"></li>
+                <li class="nav-header">Nav header</li>
+                <li><a href="#">Separated link</a></li>
+                <li><a href="#">One more separated link</a></li>
+              </ul>
+            </li>
+          </ul>
+          <form class="navbar-search pull-left" action="">
+            <input type="text" class="search-query span2" placeholder="Search">
+          </form>
+          <ul class="nav pull-right">
+            <li><a href="#">Link</a></li>
+            <li class="divider-vertical"></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Separated link</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div><!-- /.nav-collapse -->
       </div>
-            <script src="app.js"></script>
+    </div><!-- /navbar-inner -->
+  </div>
+            
+        <div class="container">
+            <div class="row">
+                <div class="row">
+                    {{#each App.nodeController}}
+                    {{view App.NodeView  contentBinding="this"}}
+                    {{/each}}
+                </div>
+                <p></p>
+                <div class="row">
+                    {{#each App.relationController}}
+                    {{view App.RelationView  contentBinding="this"}}
+                    {{/each}}
+                </div>
+                <div class="row">
+                    {{#view App.Draggable}}Test{{/view}}
+                    {{#view App.Dialog}}Upload your csv-file here{{/view}}
+                </div>
+            </div>
+        </div>
+    </script>
+        
+        
+        
+    <!--script src="lib/vendor.js"></script--->
+    <script src="app.js"></script>
 </body>
-
+    
 </html>
